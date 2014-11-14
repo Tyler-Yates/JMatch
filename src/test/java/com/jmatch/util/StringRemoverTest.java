@@ -1,4 +1,4 @@
-package com.jmatch;
+package com.jmatch.util;
 
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Test;
@@ -12,8 +12,7 @@ public class StringRemoverTest {
     @Test
     public void testGetRemovalPermutations() {
         assertThat(StringRemover.getRemovalPermutations("bob", 1, "bob*bob**bob"),
-                IsIterableContainingInAnyOrder.containsInAnyOrder("*bob**bob", "bob***bob",
-                        "bob*bob**"));
+                IsIterableContainingInAnyOrder.containsInAnyOrder("*bob**bob", "bob***bob", "bob*bob**"));
         assertThat(StringRemover.getRemovalPermutations("bob", 2, "bob*bob**bob"),
                 IsIterableContainingInAnyOrder.containsInAnyOrder("***bob", "*bob**", "bob***"));
 

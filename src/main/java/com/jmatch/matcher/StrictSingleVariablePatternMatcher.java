@@ -1,5 +1,6 @@
-package com.jmatch;
+package com.jmatch.matcher;
 
+import com.jmatch.util.StringRemover;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashSet;
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * {@link com.jmatch.Matcher} implementation that uses single letters to represent variables in patterns.
+ * {@link Matcher} implementation that uses single letters to represent variables in patterns.
  * <p>
  * The pattern matching for this class is strict such that different variables are <b>not</b> allowed to share the same
  * value. For example, the pattern {@code "xyyx"} would not match {@code "aaaa"} because both {@code 'x'} and {@code

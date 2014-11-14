@@ -1,4 +1,4 @@
-package com.jmatch;
+package com.jmatch.matcher;
 
 /**
  * Used to match strings with a given pattern.

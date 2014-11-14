@@ -1,4 +1,4 @@
-package com.jmatch;
+package com.jmatch.matcher;
 
 import org.junit.Test;
 
