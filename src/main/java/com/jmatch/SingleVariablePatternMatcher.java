@@ -2,9 +2,11 @@ package com.jmatch;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
 /**
  * {@link com.jmatch.Matcher} implementation that uses single letters to represent variables in patterns.
- * <p/>
+ * <p>
  * The pattern matching for this class is non-strict such that different variables are allowed to share the same value.
  * For example, the pattern {@code "xyyx"} would match {@code "aaaa"} by assigning {@code "a"} to both variables.
  */
@@ -44,13 +46,17 @@ public class SingleVariablePatternMatcher implements Matcher {
 
             // Check to make sure that the proper number of occurrences of the assigned value exist in the input
             final int numberOfAssignmentOccurrencesInInput = StringUtils.countMatches(input, variableAssignment);
-            if (numberOfAssignmentOccurrencesInInput == numberOfVariableOccurrencesInPattern) {
-                // Check to see if the assignment leads to a valid match
-                final boolean matchSuccessful = matchRemaining(pattern.replaceAll(variable, ""), input.replaceAll
-                        (variableAssignment, ""));
+            if (numberOfAssignmentOccurrencesInInput >= numberOfVariableOccurrencesInPattern) {
+                // Get the permutations of removing the assignment the same number of times as the variable occurred
+                // in the input
+                final List<String> removalPermutations = StringRemover.getRemovalPermutations(variableAssignment,
+                        numberOfVariableOccurrencesInPattern, input);
 
-                if (matchSuccessful) {
-                    return true;
+                // Check to see if the assignment leads to a valid match
+                for (String removalPermutation : removalPermutations) {
+                    if (matchRemaining(pattern.replaceAll(variable, ""), removalPermutation)) {
+                        return true;
+                    }
                 }
             }
         }
