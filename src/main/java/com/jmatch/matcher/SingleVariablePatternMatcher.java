@@ -6,12 +6,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 
 /**
- * {@link Matcher} implementation that uses single letters to represent variables in patterns.
+ * {@link VariablePatternMatcher} implementation that uses single letters to represent variables in patterns.
  * <p>
  * The pattern matching for this class is non-strict such that different variables are allowed to share the same value.
  * For example, the pattern {@code "xyyx"} would match {@code "aaaa"} by assigning {@code "a"} to both variables.
  */
-public class SingleVariablePatternMatcher implements Matcher {
+public class SingleVariablePatternMatcher implements VariablePatternMatcher {
     private final String pattern;
 
     /**

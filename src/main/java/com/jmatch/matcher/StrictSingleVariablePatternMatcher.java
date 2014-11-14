@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * {@link Matcher} implementation that uses single letters to represent variables in patterns.
+ * {@link VariablePatternMatcher} implementation that uses single letters to represent variables in patterns.
  * <p>
  * The pattern matching for this class is strict such that different variables are <b>not</b> allowed to share the same
  * value. For example, the pattern {@code "xyyx"} would not match {@code "aaaa"} because both {@code 'x'} and {@code
  * 'y'} would have to be assigned the value {@code "a"}.
  */
-public class StrictSingleVariablePatternMatcher implements Matcher {
+public class StrictSingleVariablePatternMatcher implements VariablePatternMatcher {
     private final String pattern;
 
     /**
