@@ -3,14 +3,17 @@ package com.jmatch;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Uses single letters to represent variables in patterns.
+ * {@link com.jmatch.Matcher} implementation that uses single letters to represent variables in patterns.
+ * <p/>
+ * The pattern matching for this class is non-strict such that different variables are allowed to share the same value.
+ * For example, the pattern {@code "xyyx"} would match {@code "aaaa"} by assigning {@code "a"} to both variables.
  */
 public class SingleVariablePatternMatcher implements Matcher {
     private final String pattern;
 
     /**
      * Constructs a new matcher with the given pattern. The pattern should consist of single letters to represent
-     * variables in the pattern. E.g. "abba" is composed of the variables 'a' and 'b'.
+     * variables in the pattern. E.g. {@code "abba"} is composed of the variables {@code 'a'} and {@code 'b'}.
      *
      * @param pattern the given pattern
      */
