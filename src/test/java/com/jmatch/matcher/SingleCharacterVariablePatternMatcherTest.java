@@ -12,13 +12,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("JavaDoc")
-public class SingleLetterVariablePatternMatcherTest {
+public class SingleCharacterVariablePatternMatcherTest {
 
-    private SingleLetterVariablePatternMatcher matcher;
+    private SingleCharacterVariablePatternMatcher matcher;
 
     @Before
     public void init() throws Exception {
-        matcher = new SingleLetterVariablePatternMatcher("abba");
+        matcher = new SingleCharacterVariablePatternMatcher("abba");
     }
 
     @Test

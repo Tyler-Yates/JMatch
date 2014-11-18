@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents matchers that use letters as variables in their patterns.
+ * Represents matchers that use characters as variables in their patterns.
  */
-abstract class LetterVariablePatternMatcher {
+abstract class CharacterVariablePatternMatcher {
 
     Map<String, String> matchRemaining(String pattern, String input, Map<String, String> assignments, boolean strict) {
         // If there is no more of the pattern left to match we need an empty input String to have matched the
@@ -22,7 +22,7 @@ abstract class LetterVariablePatternMatcher {
             }
         }
 
-        // Pick the first letter in the pattern as our current variable
+        // Pick the first character in the pattern as our current variable
         final String variable = Character.toString(pattern.charAt(0));
         // Count the number of times the variable occurs in the pattern
         final int numberOfVariableOccurrencesInPattern = StringUtils.countMatches(pattern, variable);
