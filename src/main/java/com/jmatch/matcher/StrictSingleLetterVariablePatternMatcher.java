@@ -14,7 +14,7 @@ import java.util.Set;
  * value. For example, the pattern {@code "xyyx"} would not match {@code "aaaa"} because both {@code 'x'} and {@code
  * 'y'} would have to be assigned the value {@code "a"}.
  */
-public class StrictSingleVariablePatternMatcher implements VariablePatternMatcher {
+public class StrictSingleLetterVariablePatternMatcher implements VariablePatternMatcher {
     private final String pattern;
 
     /**
@@ -23,7 +23,7 @@ public class StrictSingleVariablePatternMatcher implements VariablePatternMatche
      *
      * @param pattern the given pattern
      */
-    public StrictSingleVariablePatternMatcher(String pattern) {
+    public StrictSingleLetterVariablePatternMatcher(String pattern) {
         this.pattern = pattern;
     }
 
