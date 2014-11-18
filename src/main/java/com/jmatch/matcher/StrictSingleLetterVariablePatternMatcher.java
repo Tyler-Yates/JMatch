@@ -1,11 +1,11 @@
 package com.jmatch.matcher;
 
+import com.google.common.collect.HashBiMap;
 import com.jmatch.util.StringRemover;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * {@link VariablePatternMatcher} implementation that uses single letters to represent variables in patterns.
@@ -29,14 +29,23 @@ public class StrictSingleLetterVariablePatternMatcher implements VariablePattern
 
     @Override
     public boolean matches(String input) {
-        return matchRemaining(pattern, input, new HashSet<>());
+        return matchRemaining(pattern, input, HashBiMap.create()) != null;
     }
 
-    private boolean matchRemaining(String pattern, String input, Set<String> assignments) {
+    @Override
+    public Map<String, String> getVariableAssignments(String input) {
+        return matchRemaining(pattern, input, HashBiMap.create());
+    }
+
+    private Map<String, String> matchRemaining(String pattern, String input, Map<String, String> assignments) {
         // If there is no more of the pattern left to match we need an empty input String to have matched the
         // original input.
         if (pattern.isEmpty()) {
-            return input.isEmpty();
+            if (input.isEmpty()) {
+                return assignments;
+            } else {
+                return null;
+            }
         }
 
         // Pick the first letter in the pattern as our current variable
@@ -49,11 +58,11 @@ public class StrictSingleLetterVariablePatternMatcher implements VariablePattern
             final String variableAssignment = input.substring(0, endIndex);
 
             // Ensure that different variables do not have the same assigned value
-            if (assignments.contains(variableAssignment)) {
+            if (assignments.containsValue(variableAssignment)) {
                 continue;
             }
 
-            assignments.add(variableAssignment);
+            assignments.put(variable, variableAssignment);
             // Check to make sure that the proper number of occurrences of the assigned value exist in the input
             final int numberOfAssignmentOccurrencesInInput = StringUtils.countMatches(input, variableAssignment);
             if (numberOfAssignmentOccurrencesInInput >= numberOfVariableOccurrencesInPattern) {
@@ -64,15 +73,16 @@ public class StrictSingleLetterVariablePatternMatcher implements VariablePattern
 
                 // Check to see if the assignment leads to a valid match
                 for (String removalPermutation : removalPermutations) {
-
-                    if (matchRemaining(pattern.replaceAll(variable, ""), removalPermutation, assignments)) {
-                        return true;
+                    final Map<String, String> result = matchRemaining(pattern.replaceAll(variable, ""),
+                            removalPermutation, assignments);
+                    if (result != null) {
+                        return result;
                     }
                 }
             }
-            assignments.remove(variableAssignment);
+            assignments.remove(variable);
         }
 
-        return false;
+        return null;
     }
 }

@@ -3,7 +3,9 @@ package com.jmatch.matcher;
 import com.jmatch.util.StringRemover;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * {@link VariablePatternMatcher} implementation that uses single letters to represent variables in patterns.
@@ -26,14 +28,23 @@ public class SingleLetterVariablePatternMatcher implements VariablePatternMatche
 
     @Override
     public boolean matches(String input) {
-        return matchRemaining(pattern, input);
+        return matchRemaining(pattern, input, new HashMap<>()) != null;
     }
 
-    private boolean matchRemaining(String pattern, String input) {
+    @Override
+    public Map<String, String> getVariableAssignments(String input) {
+        return matchRemaining(pattern, input, new HashMap<>());
+    }
+
+    private Map<String, String> matchRemaining(String pattern, String input, Map<String, String> assignments) {
         // If there is no more of the pattern left to match we need an empty input String to have matched the
         // original input.
         if (pattern.isEmpty()) {
-            return input.isEmpty();
+            if (input.isEmpty()) {
+                return assignments;
+            } else {
+                return null;
+            }
         }
 
         // Pick the first letter in the pattern as our current variable
@@ -48,6 +59,8 @@ public class SingleLetterVariablePatternMatcher implements VariablePatternMatche
             // Check to make sure that the proper number of occurrences of the assigned value exist in the input
             final int numberOfAssignmentOccurrencesInInput = StringUtils.countMatches(input, variableAssignment);
             if (numberOfAssignmentOccurrencesInInput >= numberOfVariableOccurrencesInPattern) {
+                assignments.put(variable, variableAssignment);
+
                 // Get the permutations of removing the assignment the same number of times as the variable occurred
                 // in the input
                 final List<String> removalPermutations = StringRemover.getRemovalPermutations(variableAssignment,
@@ -55,13 +68,17 @@ public class SingleLetterVariablePatternMatcher implements VariablePatternMatche
 
                 // Check to see if the assignment leads to a valid match
                 for (String removalPermutation : removalPermutations) {
-                    if (matchRemaining(pattern.replaceAll(variable, ""), removalPermutation)) {
-                        return true;
+                    final Map<String, String> result = matchRemaining(pattern.replaceAll(variable, ""),
+                            removalPermutation, assignments);
+                    if (result != null) {
+                        return result;
                     }
                 }
+
+                assignments.remove(variable);
             }
         }
 
-        return false;
+        return null;
     }
 }
