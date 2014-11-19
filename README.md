@@ -1,8 +1,9 @@
 JMatch
 ======
 
-JMatch is a library that allows for variable pattern matching of Strings in Java.
+JMatch is a library that allows for variable pattern matching of Strings in Java. JMatch is designed to be simple to use and easy to understand.
 
+### Variable Pattern Matching
 Variable pattern matching defines patterns such as:<br>
 `"xyyx"`
 
