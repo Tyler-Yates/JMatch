@@ -11,7 +11,8 @@ import java.util.Map;
  * value. For example, the pattern {@code "xyyx"} would not match {@code "aaaa"} because both {@code 'x'} and {@code
  * 'y'} would have to be assigned the value {@code "a"}.
  */
-public class StrictSingleCharacterVariablePatternMatcher extends CharacterVariablePatternMatcher implements VariablePatternMatcher {
+public class StrictSingleCharacterVariablePatternMatcher extends CharacterVariablePatternMatcher implements
+        VariablePatternMatcher {
     private final String pattern;
 
     /**
