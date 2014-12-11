@@ -1,35 +1,99 @@
 package com.jmatch.matcher;
 
-import java.util.HashMap;
+import com.jmatch.util.StringRemover;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 import java.util.Map;
 
 /**
- * {@link VariablePatternMatcher} implementation that uses single characters to represent variables in patterns.
- * <p>
- * The pattern matching for this class is non-strict such that different variables are allowed to share the same value.
- * For example, the pattern {@code "xyyx"} would match {@code "aaaa"} by assigning {@code "a"} to both variables.
+ * /** Represents matchers that use single characters as variables in their patterns.
  */
-public class SingleCharacterVariablePatternMatcher extends CharacterVariablePatternMatcher implements
-        VariablePatternMatcher {
-    private final String pattern;
+public abstract class SingleCharacterVariablePatternMatcher implements VariablePatternMatcher {
 
-    /**
-     * Constructs a new matcher with the given pattern. The pattern should consist of single characters to represent
-     * variables in the pattern. E.g. {@code "abba"} is composed of the variables {@code 'a'} and {@code 'b'}.
-     *
-     * @param pattern the given pattern
-     */
-    public SingleCharacterVariablePatternMatcher(String pattern) {
+    protected final String pattern;
+
+    protected SingleCharacterVariablePatternMatcher(String pattern) {
         this.pattern = pattern;
     }
 
-    @Override
-    public boolean matches(String input) {
-        return matchRemaining(pattern, input, new HashMap<>(), false) != null;
+    /**
+     * Returns a new strict matcher with the given pattern.
+     *
+     * @param pattern the matcher pattern
+     *
+     * @return a new strict matcher
+     */
+    public static VariablePatternMatcher createStrictMatcher(String pattern) {
+        if (pattern.isEmpty()) {
+            return new EmptyVariablePatternMatcher();
+        }
+
+        return new StrictSingleCharacterVariablePatternMatcher(pattern);
     }
 
-    @Override
-    public Map<String, String> getVariableAssignments(String input) {
-        return matchRemaining(pattern, input, new HashMap<>(), false);
+    /**
+     * Returns a new non-strict matcher with the given pattern.
+     *
+     * @param pattern the matcher pattern
+     *
+     * @return a new non-strict matcher
+     */
+    public static VariablePatternMatcher createNonStrictMatcher(String pattern) {
+        if (pattern.isEmpty()) {
+            return new EmptyVariablePatternMatcher();
+        }
+
+        return new NonStrictSingleCharacterVariablePatternMatcher(pattern);
+    }
+
+    protected Map<String, String> matchRemaining(String pattern, String input, Map<String, String> assignments,
+                                                 boolean strict) {
+        // If there is no more of the pattern left to match we need an empty input String to have matched the
+        // original input.
+        if (pattern.isEmpty()) {
+            if (input.isEmpty()) {
+                return assignments;
+            } else {
+                return null;
+            }
+        }
+
+        // Pick the first character in the pattern as our current variable
+        final String variable = Character.toString(pattern.charAt(0));
+        // Count the number of times the variable occurs in the pattern
+        final int numberOfVariableOccurrencesInPattern = StringUtils.countMatches(pattern, variable);
+
+        // Greedily attempt to assign a value to the current variable
+        for (int endIndex = input.length(); endIndex > 0; endIndex--) {
+            final String variableAssignment = input.substring(0, endIndex);
+
+            // If we are strict, ensure that different variables do not have the same assigned value
+            if (strict && assignments.containsValue(variableAssignment)) {
+                continue;
+            }
+
+            assignments.put(variable, variableAssignment);
+            // Check to make sure that the proper number of occurrences of the assigned value exist in the input
+            final int numberOfAssignmentOccurrencesInInput = StringUtils.countMatches(input, variableAssignment);
+            if (numberOfAssignmentOccurrencesInInput >= numberOfVariableOccurrencesInPattern) {
+                // Get the permutations of removing the assignment the same number of times as the variable occurred
+                // in the input
+                final List<String> removalPermutations = StringRemover.getRemovalPermutations(variableAssignment,
+                        numberOfVariableOccurrencesInPattern, input);
+
+                // Check to see if the assignment leads to a valid match
+                for (String removalPermutation : removalPermutations) {
+                    final Map<String, String> result = matchRemaining(pattern.replaceAll(variable, ""),
+                            removalPermutation, assignments, strict);
+                    if (result != null) {
+                        return result;
+                    }
+                }
+            }
+            assignments.remove(variable);
+        }
+
+        return null;
     }
 }

@@ -6,14 +6,12 @@ import java.util.Map;
 
 /**
  * {@link VariablePatternMatcher} implementation that uses single characters to represent variables in patterns.
- * <p>
+ * <p/>
  * The pattern matching for this class is strict such that different variables are <b>not</b> allowed to share the same
  * value. For example, the pattern {@code "xyyx"} would not match {@code "aaaa"} because both {@code 'x'} and {@code
  * 'y'} would have to be assigned the value {@code "a"}.
  */
-public class StrictSingleCharacterVariablePatternMatcher extends CharacterVariablePatternMatcher implements
-        VariablePatternMatcher {
-    private final String pattern;
+public class StrictSingleCharacterVariablePatternMatcher extends SingleCharacterVariablePatternMatcher {
 
     /**
      * Constructs a new strict matcher with the given pattern. The pattern should consist of single characters to
@@ -22,8 +20,8 @@ public class StrictSingleCharacterVariablePatternMatcher extends CharacterVariab
      *
      * @param pattern the given pattern
      */
-    public StrictSingleCharacterVariablePatternMatcher(String pattern) {
-        this.pattern = pattern;
+    StrictSingleCharacterVariablePatternMatcher(String pattern) {
+        super(pattern);
     }
 
     @Override
