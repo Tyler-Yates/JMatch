@@ -9,6 +9,19 @@ import java.util.Map;
  */
 class EmptyVariablePatternMatcher implements VariablePatternMatcher {
 
+    private static EmptyVariablePatternMatcher matcher;
+
+    private EmptyVariablePatternMatcher() {
+    }
+
+    static EmptyVariablePatternMatcher getInstance() {
+        if (matcher == null) {
+            matcher = new EmptyVariablePatternMatcher();
+        }
+
+        return matcher;
+    }
+
     @Override
     public boolean matches(String input) {
         return true;

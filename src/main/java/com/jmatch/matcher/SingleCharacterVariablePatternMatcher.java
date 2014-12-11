@@ -26,7 +26,7 @@ public abstract class SingleCharacterVariablePatternMatcher implements VariableP
      */
     public static VariablePatternMatcher createStrictMatcher(String pattern) {
         if (pattern.isEmpty()) {
-            return new EmptyVariablePatternMatcher();
+            return EmptyVariablePatternMatcher.getInstance();
         }
 
         return new StrictSingleCharacterVariablePatternMatcher(pattern);
@@ -41,7 +41,7 @@ public abstract class SingleCharacterVariablePatternMatcher implements VariableP
      */
     public static VariablePatternMatcher createNonStrictMatcher(String pattern) {
         if (pattern.isEmpty()) {
-            return new EmptyVariablePatternMatcher();
+            return EmptyVariablePatternMatcher.getInstance();
         }
 
         return new NonStrictSingleCharacterVariablePatternMatcher(pattern);
